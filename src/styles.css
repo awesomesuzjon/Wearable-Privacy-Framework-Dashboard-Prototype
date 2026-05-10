@@ -1,0 +1,125 @@
+.App {
+    font-family: sans-serif;
+    text-align: center;
+}
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #f8fafc);
+}
+
+.app-container {
+    padding: 30px;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.header h1 {
+    font-size: 28px;
+    color: #1e293b;
+}
+
+.header p {
+    color: #64748b;
+}
+
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+.selector-button-wrapper {
+    display: flex;
+    /*justify-content: center;*/
+    margin: 20px 0;
+}
+.modern-select-button {
+    padding: 12px 18px;
+    border-radius: 14px;
+    border: 1px solid #cbd5e1;
+    background: linear-gradient(135deg, #ffffff, #f8fafc);
+    font-size: 14px;
+    min-width: 50px;
+    cursor: pointer;
+    font-weight: 600;
+    color: #1e293b;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    transition: all 0.25s ease;
+}
+
+.modern-select-button:hover {
+    border-color: #2563eb;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(37,99,235,0.15);
+}
+
+.modern-select-button:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 4px rgba(37,99,235,0.2);
+}
+
+
+button {
+    padding: 12px 25px;
+    background: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #1d4ed8;
+}
+
+.center {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.output-container {
+    display: grid;
+    gap: 15px;
+}
+
+.red {
+    border-left: 5px solid #ef4444;
+}
+.green {
+    border-left: 5px solid #22c55e;
+}
+.yellow {
+    border-left: 5px solid #eab308;
+}
+.blue {
+    border-left: 5px solid #3b82f6;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+th,
+td {
+    border: 1px solid #e2e8f0;
+    padding: 8px;
+    text-align: center;
+}
+
+th {
+    background: #f1f5f9;
+}
