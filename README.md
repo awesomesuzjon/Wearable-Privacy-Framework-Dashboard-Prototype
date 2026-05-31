@@ -1,3 +1,47 @@
+# Privacy-Preserving Wearable Mental Health Framework
+
+An interactive research prototype developed for the Master of Information Technology (Cyber Security) program at Macquarie University.
+
+This project demonstrates how wearable health data can be analyzed for mental wellbeing insights while preserving user privacy through anonymisation and secure data handling practices.
+
+## Features
+
+* Wearable health data visualization
+* Mental health behavioural insights
+* Data anonymisation and de-identification
+* Consent verification workflow
+* Aggregated privacy-preserving datasets
+* Simulated participant dashboard
+* No third-party data sharing
+
+## Research Objective
+
+The framework explores how cybersecurity and privacy principles can be applied to wearable health technologies to support mental health monitoring while protecting sensitive user information.
+
+## Technology Stack
+
+* React 19
+* JavaScript (ES6+)
+* HTML5
+* CSS3
+* React Scripts
+* React Testing Library
+* Jest DOM
+* Web Vitals
+
+## Privacy Controls
+
+* Identifier removal
+* Data anonymisation
+* Data aggregation
+* Consent verification
+* Privacy-preserving behavioural analysis
+
+## Disclaimer
+
+All participant data displayed within the application is simulated and intended solely for educational and research demonstration purposes.
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
