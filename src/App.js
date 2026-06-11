@@ -2,75 +2,93 @@ import React from "react";
 import "./styles.css";
 
 export default function WearablePrivacyFrameworkDashboard() {
-    const participants = {
-        P01: {
-            id: "P01",
-            age: 22,
-            device: "Apple Watch",
-            sleep: 5.8,
-            deepSleep: 0.6,
-            rem: 1.0,
-            awake: 1.2,
-            hr: 72,
-            hrv: 42,
-        },
-        P02: {
-            id: "P02",
-            age: 45,
-            device: "Samsung Galaxy Watch",
-            sleep: 7.2,
-            deepSleep: 1.4,
-            rem: 1.6,
-            awake: 0.8,
-            hr: 64,
-            hrv: 58,
-        },
-        P03: {
-            id: "P03",
-            age: 61,
-            device: "Garmin",
-            sleep: 6.1,
-            deepSleep: 0.7,
-            rem: 1.1,
-            awake: 1.5,
-            hr: 69,
-            hrv: 39,
-        },
-        P04: {
-            id: "P04",
-            age: 30,
-            device: "Apple Watch",
-            sleep: 7.8,
-            deepSleep: 1.8,
-            rem: 2.0,
-            awake: 0.5,
-            hr: 60,
-            hrv: 65,
-        },
-    };
-
+    const [participants, setParticipants] = React.useState({});
     const [selected, setSelected] = React.useState("P01");
     const [processed, setProcessed] = React.useState(false);
 
+    React.useEffect(() => {
+        fetch(`/data/${selected}.csv`)
+            .then((res) => res.text())
+            .then((text) => {
+                const rows = text
+                    .split("\n")
+                    .slice(1)
+                    .filter((r) => r.trim());
+
+                const records = rows.map((row) => {
+                    const c = row.split(",");
+
+                    return {
+                        totalSleep: Number(c[2]),
+                        deepSleep: Number(c[3]),
+                        rem: Number(c[5]),
+                        awake: Number(c[6]),
+                        restingHR: Number(c[7]),
+                        hrv: Number(c[12]),
+                    };
+                });
+
+                const avg = (key) =>
+                    records.reduce((sum, r) => sum + (r[key] || 0), 0) /
+                    (records.length || 1);
+
+                const meta = {
+                    P01: { age: 22, device: "Apple Watch" },
+                    P02: { age: 45, device: "Samsung Galaxy Watch" },
+                    P03: { age: 61, device: "Garmin" },
+                    P04: { age: 30, device: "Apple Watch" },
+                };
+
+                setParticipants((prev) => ({
+                    ...prev,
+                    [selected]: {
+                        id: selected,
+                        age: meta[selected].age,
+                        device: meta[selected].device,
+                        sleep: Number(avg("totalSleep").toFixed(2)),
+                        deepSleep: Number(avg("deepSleep").toFixed(2)),
+                        rem: Number(avg("rem").toFixed(2)),
+                        awake: Number(avg("awake").toFixed(2)),
+                        hr: Number(avg("restingHR").toFixed(0)),
+                        hrv: Number(avg("hrv").toFixed(0)),
+                    },
+                }));
+            });
+    }, [selected]);
+
     const data = participants[selected];
 
-    const runFramework = () => {
-        setProcessed(true);
-    };
+    if (!data) return <div>Loading participant data...</div>;
+
+    const runFramework = () => setProcessed(true);
 
     const getInsight = () => {
-        if (data.sleep < 6 && data.hrv < 45) {
-            return "High stress behavioural pattern detected (low sleep + low HRV).";
-        } else if (data.sleep >= 7 && data.hrv >= 55) {
-            return "Healthy recovery pattern observed (good sleep + strong HRV).";
-        } else {
-            return "Moderate behavioural pattern detected. No strong stress indicators.";
+        const p = participants[selected];
+
+        if (!p) return "No data available.";
+
+        const sleep = Number(p.sleep);
+        const hrv = Number(p.hrv);
+        const hr = Number(p.hr);
+
+        // 🔴 HIGH RISK
+        if (sleep < 6 && hrv < 45 && hr > 60) {
+            return "High risk pattern detected: poor sleep, low HRV, and elevated heart rate.";
         }
+
+        // 🟡 MODERATE RISK
+        if (sleep < 6.8 || hrv < 55) {
+            return "Moderate stress indicators present: reduced recovery quality detected.";
+        }
+
+        // 🟢 HEALTHY
+        return "Healthy physiological pattern: stable sleep and recovery metrics observed.";
     };
 
     const anonymisedTable = Object.values(participants).map((p, index) => ({
         id: "PX" + (index + 1),
-        ageGroup: p.age > 50 ? "50-60" : p.age > 30 ? "30-50" : "20-30",
+        ageGroup:
+            p.age > 50 ? "50-60" : p.age > 30 ? "30-50" : "20-30",
         sleep: p.sleep,
         hrv: p.hrv,
         hr: p.hr,
@@ -80,32 +98,28 @@ export default function WearablePrivacyFrameworkDashboard() {
     return (
         <div className="app-container">
             <div className="header">
-                <h1>Privacy-Preserving Wearable Mental Health Framework</h1>
+                <h1>
+                    Privacy-Preserving Wearable Mental Health Framework
+                </h1>
                 <p>Interactive Research Prototype Dashboard</p>
             </div>
 
-            {/* Selector */}
             <div className="card">
                 <h2>Select Participant</h2>
-                <div className="center selector-button-wrapper">
-                    <select
-                        className="modern-select-button"
-                        value={selected}
-                        onChange={(e) => {
-                            setSelected(e.target.value);
-                            setProcessed(false);
-                        }}
-                    >
-                        {Object.keys(participants).map((p) => (
-                            <option key={p} value={p}>
-                                {p}
-                            </option>
-                        ))}
-                    </select>
-                </div>
+                <select
+                    value={selected}
+                    onChange={(e) => {
+                        setSelected(e.target.value);
+                        setProcessed(false);
+                    }}
+                >
+                    <option value="P01">P01</option>
+                    <option value="P02">P02</option>
+                    <option value="P03">P03</option>
+                    <option value="P04">P04</option>
+                </select>
             </div>
 
-            {/* Data */}
             <div className="card">
                 <h2>Wearable Data</h2>
                 <div className="grid">
@@ -118,17 +132,19 @@ export default function WearablePrivacyFrameworkDashboard() {
                 </div>
             </div>
 
-            {/* Button */}
             <div className="center">
-                <button onClick={runFramework}>Run Privacy Framework</button>
+                <button onClick={runFramework}>
+                    Run Privacy Framework
+                </button>
             </div>
 
-            {/* Output */}
             {processed && (
                 <div className="output-container">
                     <div className="card red">
                         <h3>Raw Data Removed</h3>
-                        <p>Identifiers, location and device IDs removed.</p>
+                        <p>
+                            Identifiers, location and device IDs removed.
+                        </p>
                     </div>
 
                     <div className="card green">
@@ -160,16 +176,6 @@ export default function WearablePrivacyFrameworkDashboard() {
                     <div className="card yellow">
                         <h3>Behavioural Insight</h3>
                         <p>{getInsight()}</p>
-                    </div>
-
-                    <div className="card blue">
-                        <h3>Privacy Controls</h3>
-                        <ul>
-                            <li>✔ Anonymisation Applied</li>
-                            <li>✔ Aggregation Enabled</li>
-                            <li>✔ Consent Verified</li>
-                            <li>✔ No Third-Party Sharing</li>
-                        </ul>
                     </div>
                 </div>
             )}
